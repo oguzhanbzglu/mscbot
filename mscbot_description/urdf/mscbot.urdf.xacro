@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="robot_name">
+    <xacro:include filename="mscbot.xacro"/>
+    <xacro:include filename="mscbot_gazebo.xacro"/>
+    <xacro:include filename="mscbot_ros2_control.xacro"/>
+    <!-- Base link -->
+    <link name="base_link" />
+    <link name="orientation_link" />
+
+    <joint name="orientation_joint" type="fixed">
+        <parent link="base_link"/>
+        <child link="orientation_link"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+    </joint>
+
+    <!-- inserting motors and wheels -->
+    <xacro:mscbot_motor prefix="right" reflex="-1"/>
+    <xacro:mscbot_motor prefix="left" reflex="1"/>
+    <xacro:mscbot_wheel prefix="right" reflex="-1"/>
+    <xacro:mscbot_wheel prefix="left" reflex="1"/>
+
+    <xacro:caster_wheel/>
+    
+</robot>

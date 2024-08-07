@@ -1,0 +1,206 @@
+<?xml version="1.0"?>
+
+<robot xmlns:xacro="http://ros.org/wiki/xacro" name="mscbot">
+
+    <!-- Chassis -->
+    <link name="chassis_link">
+        <visual>
+            <geometry>
+                <mesh filename="package://mscbot_description/meshes/visual/chassis.dae" />
+            </geometry>
+        </visual>
+        <collision>
+            <geometry>
+                <mesh filename="package://mscbot_description/meshes/collision/chassis.stl" />
+            </geometry>
+        </collision>
+        <!-- Inertias Kg/m3 -->
+        <inertial>
+            <mass value="4.13021192"/>
+            <origin xyz="-0.14099e-3 0 94.91001e-3" />
+            <inertia ixx="70012.84471e-3" ixy="0.06953e-3" ixz="0.37332e-3" iyy="131739.087e-3" iyz="-0.16046e-3" izz="153459.67507e-3"/>
+        </inertial>
+    </link>
+
+    <joint name="base_to_chassis_joint" type="fixed">
+        <parent link="orientation_link"/>
+        <child link="chassis_link"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+    </joint>
+
+    <!-- Mounting Plate  -->
+    <link name="mounting_plate_link">
+        <visual>
+            <geometry>
+                <mesh filename="package://mscbot_description/meshes/visual/mounting_plate.dae" />
+            </geometry>
+        </visual>
+        <collision>
+            <geometry>
+                <mesh filename="package://mscbot_description/meshes/collision/mounting_plate.stl" />
+            </geometry>
+        </collision>
+        <inertial>
+            <mass value="0.405"/>
+            <origin xyz="0 0 31.5e-3" />
+            <inertia ixx="3037.80375e-3" ixy="0" ixz="0" iyy="4374.30375e-3" iyz="0" izz="7411.5e-3"/>
+        </inertial>
+    </link>
+    <joint name="chassis_to_mounting_plate_joint" type="fixed">
+        <parent link="chassis_link"/>
+        <child link="mounting_plate_link"/>
+        <origin xyz="0 0 33.0e-3" rpy="0 0 0"/>
+    </joint>
+
+
+    <!-- Motors -->
+    <xacro:macro name="mscbot_motor" params="prefix reflex">
+        <xacro:property name="yaw" value="0"/>
+        <xacro:if value="${reflex == -1}">
+            <xacro:property name="yaw" value="${pi}"/>
+        </xacro:if>
+        <link name="${prefix}_motor_link">
+            <visual>
+                <geometry>
+                    <mesh filename="package://mscbot_description/meshes/visual/motor.dae" />
+                </geometry>
+            </visual>
+            <collision>
+                <geometry>
+                    <mesh filename="package://mscbot_description/meshes/collision/motor.stl" />
+                </geometry>
+            </collision>
+            <inertial>
+                <mass value="0.35346185"/>
+                <origin xyz="180.0e-3 ${reflex*(128.5e-3)} -20.0e-3" rpy="0 0 ${yaw}"/>
+                <inertia ixx="52.02349e-3" ixy="0.0" ixz="1.22752e-3" iyy="126.04524e-3" iyz="0.0" izz="120.03932e-3"/>
+            </inertial>
+        </link>
+
+        <joint name="chassis_to_${prefix}_motor_joint" type="fixed">
+            <parent link="chassis_link"/>
+            <child link="${prefix}_motor_link"/>
+            <origin xyz="180.0e-3 ${reflex*(128.5e-3)} -20.0e-3" rpy="0 0 ${yaw}"/>
+        </joint>
+    </xacro:macro>
+
+    <!-- Wheels -->
+    <xacro:macro name="mscbot_wheel" params="prefix reflex">
+        <xacro:property name="yaw" value="0"/>
+        <xacro:if value="${reflex == -1}">
+            <xacro:property name="yaw" value="${pi}"/>
+        </xacro:if>
+        <link name="${prefix}_wheel_link">
+            <visual>
+                <geometry>
+                    <mesh filename="package://mscbot_description/meshes/visual/wheel.dae" />
+                </geometry>
+            </visual>
+            <collision>
+                <geometry>
+                    <mesh filename="package://mscbot_description/meshes/collision/wheel.stl" />
+                </geometry>
+            </collision>
+            <inertial>
+                <mass value="0.35"/>
+                <origin xyz="180.0e-3 ${reflex*(201.5e-3)} -20.0e-3"/>
+                <inertia ixx="820.10526e-3" ixy="0.0" ixz="0.0" iyy="1235.98603e-3" iyz="0.0" izz="820.10526e-3"/>
+            </inertial>
+        </link>
+
+        <joint name="wheel_${prefix}_joint" type="continuous">
+            <parent link="chassis_link"/>
+            <child link="${prefix}_wheel_link"/>
+            <origin xyz="180.0e-3 ${reflex*(201.5e-3)} -20.0e-3" rpy="0 0 0"/>
+            <axis xyz="0 1 0" />
+        </joint>
+    </xacro:macro>
+
+    <!-- Caster Wheel -->
+    <xacro:macro name="caster_wheel" params="">
+        <!-- dummy link -->
+        <link name="caster_wheel_base" />
+        <joint name="chassis_to_caster_wheel_base_joint" type="fixed">
+            <parent link="chassis_link"/>
+            <child link="caster_wheel_base"/>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+        </joint>
+
+        <!-- Top plate -->
+        <link name="caster_wheel_top_plate_link">
+            <visual>
+                <geometry>
+                    <mesh filename="package://mscbot_description/meshes/visual/caster_wheel_top_plate.dae" />
+                </geometry>
+            </visual>
+            <collision>
+                <geometry>
+                    <mesh filename="package://mscbot_description/meshes/collision/caster_wheel_top_plate.stl" />
+                </geometry>
+            </collision>
+            <inertial>
+                <mass value="0.14418457"/>
+                <origin xyz="-143.57354e-3 0 -6.702e-3"/>
+                <inertia ixx="57.06399e-3" ixy="-2.313e-9" ixz="-0.81573e-3" iyy="48.26497e-3" iyz="-7.840e-10" izz="100.03429e-3"/>
+            </inertial>
+        </link>
+
+        <joint name="caster_base_to_wheel_top_plate_joint" type="fixed">
+            <parent link="caster_wheel_base"/>
+            <child link="caster_wheel_top_plate_link"/>
+            <origin xyz="-143.158e-3 0 0" rpy="0 0 0"/>
+        </joint>
+
+        <!-- Upper part -->
+        <link name="caster_wheel_upper_part_link">
+            <visual>
+                <geometry>
+                    <mesh filename="package://mscbot_description/meshes/visual/caster_wheel_upper_part.dae" />
+                </geometry>
+            </visual>
+            <collision>
+                <geometry>
+                    <mesh filename="package://mscbot_description/meshes/collision/caster_wheel_upper_part.stl" />
+                </geometry>
+            </collision>
+            <inertial>
+                <mass value="0.13558318"/>
+                <origin xyz="-164.31023e-3 -0.01827e-3 -34.40848e-3"/>
+                <inertia ixx="74.72273e-3" ixy="-0.01349e-3" ixz="-14.16164e-3" iyy="67.02204e-3" iyz="-0.03125e-3" izz="66.67706e-3"/>
+            </inertial>
+        </link>
+
+        <joint name="chassis_to_caster_wheel_upper_part_joint" type="fixed">
+            <parent link="caster_wheel_top_plate_link"/>
+            <child link="caster_wheel_upper_part_link"/>
+            <origin xyz="-10.0e-3 0 -17.13636e-3" rpy="0 0 0"/>
+        </joint>
+        
+        <!-- Caster Wheel -->
+        <link name="caster_wheel_link">
+            <visual>
+                <geometry>
+                    <mesh filename="package://mscbot_description/meshes/visual/caster_wheel.dae" />
+                </geometry>
+            </visual>
+            <collision>
+                <geometry>
+                    <mesh filename="package://mscbot_description/meshes/collision/caster_wheel.stl" />
+                </geometry>
+            </collision>
+            <inertial>
+                <mass value="0.131"/>
+                <origin xyz="-179.458e-3 0 -68.5e-3" />
+                <inertia ixx="57.77833e-3" ixy="0.0" ixz="0.0" iyy="106.3445e-3" iyz="0.0" izz="57.77833e-3"/>
+            </inertial>
+        </link>
+
+        <joint name="chassis_to_caster_wheel_joint" type="continuous">
+            <parent link="caster_wheel_upper_part_link"/>
+            <child link="caster_wheel_link"/>
+            <origin xyz="-26.3e-3 0 -51.36364e-3" rpy="0 0 0"/>
+            <axis xyz="0 1 0" />
+        </joint>  
+
+    </xacro:macro>
+</robot>
