@@ -148,7 +148,7 @@
         <joint name="caster_base_to_wheel_top_plate_joint" type="fixed">
             <parent link="caster_wheel_base"/>
             <child link="caster_wheel_top_plate_link"/>
-            <origin xyz="-143.158e-3 0 0" rpy="0 0 0"/>
+            <origin xyz="-143.158e-3 0 1.0e-3" rpy="0 0 0"/>
         </joint>
 
         <!-- Upper part -->
@@ -170,10 +170,11 @@
             </inertial>
         </link>
 
-        <joint name="chassis_to_caster_wheel_upper_part_joint" type="fixed">
+        <joint name="chassis_to_caster_wheel_upper_part_joint" type="continuous">
             <parent link="caster_wheel_top_plate_link"/>
             <child link="caster_wheel_upper_part_link"/>
             <origin xyz="-10.0e-3 0 -17.13636e-3" rpy="0 0 0"/>
+            <axis xyz="0 0 1" />
         </joint>
         
         <!-- Caster Wheel -->
@@ -194,7 +195,7 @@
                 <inertia ixx="57.77833e-3" ixy="0.0" ixz="0.0" iyy="106.3445e-3" iyz="0.0" izz="57.77833e-3"/>
             </inertial>
         </link>
-
+        
         <joint name="chassis_to_caster_wheel_joint" type="continuous">
             <parent link="caster_wheel_upper_part_link"/>
             <child link="caster_wheel_link"/>

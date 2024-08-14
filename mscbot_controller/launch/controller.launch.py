@@ -1,5 +1,7 @@
 from launch import LaunchDescription
 from launch_ros.actions import Node
+from launch.actions import DeclareLaunchArgument
+from launch.substitutions import LaunchConfiguration
 
 
 def generate_launch_description():
@@ -23,9 +25,16 @@ def generate_launch_description():
         ]
     )
 
+    kinematics_controller_py = Node(
+        package="mscbot_controller",
+        executable="kinematics_controller.py",
+  
+    )
+
     return LaunchDescription(
         [
             joint_state_broadcaster_spawner,
             simple_controller,
+            kinematics_controller_py
         ]
     )
