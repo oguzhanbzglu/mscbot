@@ -31,3 +31,8 @@ This repository showcases the development of a custom autonomous robot designed 
 This section demonstrates the robot's waypoint tracking capabilities with a visualized trajectory:
 
 [waypoint_tracking.webm](https://github.com/user-attachments/assets/510e772b-0590-4a75-a9ef-f69deea84b01)
+
+
+## Inspirational Sources
+
+This project has been inspired by the following sources:
