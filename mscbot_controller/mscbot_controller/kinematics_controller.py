@@ -17,7 +17,7 @@ class KinematicsController(Node):
  
         # Wheel dynamic parameters
         self.R = 0.085
-        self.L = 0.4
+        self.L = 0.403
 
         # initial vehicle parameters - definetions to compute the linear and angular velocities of the robot based on the wheels' pose
         self.left_wheel_prev_pose_ = 0.0
