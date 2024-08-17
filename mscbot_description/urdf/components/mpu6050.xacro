@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="mpu6050">
+    <xacro:macro name="mpu6050" params="name:=mpu6050 *origin parent topic_name:=mpu6050/imu service_name:=mpu6050/service">
+
+        <link name="${name}_imu_link">
+            <visual>
+                <geometry>
+                    <box size="20.5e-3 16.0e-3 1.5e-3"/>
+                </geometry>
+            </visual>
+            <collision>
+                <geometry>
+                    <box size="20.5e-3 16.0e-3 1.5e-3"/>
+                </geometry>
+            </collision>
+            <inertial>
+                <mass value="0.01"/>
+                <origin xyz="-0.01963e-3 -0.03606e-3 33.848e-3" />
+                <inertia ixx="0.19373e-3" ixy="0.00168e-3" ixz="0.00017e-3" iyy="0.33026e-3" iyz="3.932e-8" izz="0.52025e-3"/>
+            </inertial>
+        </link>
+
+        <joint name="mounting_plate_to_imu" type="fixed">
+            <xacro:insert_block name="origin" />
+            <parent link="${parent}"/>
+            <child link="${name}_imu_link"/>
+        </joint>
+
+        <!-- IMU sensor (GazeboRosImuSensor)
+        Description: simulates an Inertial Motion Unit sensor, the main differences from IMU (GazeboRosIMU) are:
+        - inheritance from SensorPlugin instead of ModelPlugin, - measurements are given by gazebo ImuSensor instead of being computed by the ros plugin,
+        - gravity is included in inertial measurements. - set initialOrientationAsReference to false to comply with REP 145. -->
+        <gazebo reference="${name}_imu_link">
+            <material>Gazebo/Blue</material>
+            <gravity>true</gravity>
+            <sensor name="imu_sensor" type="imu">
+              <always_on>true</always_on>
+              <update_rate>100</update_rate>
+              <visualize>true</visualize>
+              <topic>${topic_name}</topic>
+              <plugin filename="libgazebo_ros_imu_sensor.so" name="${name}_imu">
+                <topicName>${topic_name}</topicName>
+                <bodyName>${name}_imu_link</bodyName>
+                <updateRateHZ>100.0</updateRateHZ>
+                <gaussianNoise>0.0</gaussianNoise>
+                <xyzOffset>0 0 0</xyzOffset>
+                <rpyOffset>0 0 0</rpyOffset>
+                <frameName>${name}_imu_link</frameName>
+                <initialOrientationAsReference>false</initialOrientationAsReference>
+              </plugin>
+              <pose>0 0 0 0 0 0</pose>
+            </sensor>
+        </gazebo>
+    </xacro:macro>
+
+    <!-- include the MPU6050 gyro sensor -->
+    <xacro:mpu6050 parent="mounting_plate_link" >
+        <origin xyz="0 0 0.1e-3" rpy="0 0 0" />
+    </xacro:mpu6050>
+
+</robot>

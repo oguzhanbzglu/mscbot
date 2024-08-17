@@ -201,7 +201,7 @@
             <child link="caster_wheel_link"/>
             <origin xyz="-26.3e-3 0 -51.36364e-3" rpy="0 0 0"/>
             <axis xyz="0 1 0" />
-        </joint>  
+        </joint>
 
     </xacro:macro>
 </robot>
