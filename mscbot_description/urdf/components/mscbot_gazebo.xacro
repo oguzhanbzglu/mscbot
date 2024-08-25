@@ -65,4 +65,21 @@
         <parameters>$(find mscbot_controller)/config/mscbot_controllers.yaml</parameters>
       </plugin>
     </gazebo>
+
+    <plugin name="wheel_slip_controller" filename="libgazebo_ros_wheel_slip.so">
+        <mu1>1.0</mu1>
+        <mu2>0.8</mu2>
+        <slip_compliance_unitless_lateral>0.0</slip_compliance_unitless_lateral>
+        <slip_compliance_unitless_longitudinal>0.0</slip_compliance_unitless_longitudinal>
+        <wheel_link_name>left_wheel_link</wheel_link_name>
+    </plugin>
+
+    <plugin name="wheel_slip_controller" filename="libgazebo_ros_wheel_slip.so">
+        <mu1>1.0</mu1>
+        <mu2>0.8</mu2>
+        <slip_compliance_unitless_lateral>0.0</slip_compliance_unitless_lateral>
+        <slip_compliance_unitless_longitudinal>0.0</slip_compliance_unitless_longitudinal>
+        <wheel_link_name>right_wheel_link</wheel_link_name>
+    </plugin>
+
 </robot>

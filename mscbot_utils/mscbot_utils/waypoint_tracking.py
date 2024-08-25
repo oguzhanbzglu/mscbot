@@ -48,16 +48,16 @@ class WaypointTracking(Node):
         self.gazebo_pose = []
 
         # PID controller for linear velocity
-        self.kP = 0.2
-        self.kI = 0.001
-        self.kD = 0.05
+        self.kP = 0.025
+        self.kI = 0.01
+        self.kD = 0.2
         self.prev_error = 0.0
         self.integralErr = 0.0
 
         # PID controller for angular velocity
-        self.kP_w = 4.0
-        self.kI_w = 0.001
-        self.kD_w = 0.05
+        self.kP_w = 1.5
+        self.kI_w = 0.05
+        self.kD_w = 0.1
         self.prev_error_w = 0.0
         self.integralErr_w = 0.0
 
@@ -119,8 +119,9 @@ class WaypointTracking(Node):
         derivative_w = error_dtheta - self.prev_error_w
         self.prev_error_w = error_dtheta
         pid_output_w = self.kP_w * error_dtheta + self.kI_w * self.integralErr_w + self.kD_w * derivative_w
-        d_theta = max(min(pid_output_w, self.max_ang_vel), -self.max_ang_vel)  # Apply speed limit
+        omega = max(min(pid_output_w, self.max_ang_vel), -self.max_ang_vel)  # Apply speed limit
 
+        # d_theta = max(min(d_theta, self.max_ang_vel), -self.max_ang_vel)
 
         if distance_to_goal <= self.distanceTolerance:
             self.get_logger().info('The robot has reached the waypoint x: %f, y: %f' % (current_x, current_y))
@@ -132,10 +133,10 @@ class WaypointTracking(Node):
                 self.cmd_vel_pub_.publish(cmd_vel_msg)
             else:
                 cmd_vel_msg.twist.linear.x = linear_vel
-                cmd_vel_msg.twist.angular.z = d_theta
+                cmd_vel_msg.twist.angular.z = omega
         else:
             cmd_vel_msg.twist.linear.x = linear_vel
-            cmd_vel_msg.twist.angular.z = d_theta
+            cmd_vel_msg.twist.angular.z = omega
         
         self.cmd_vel_pub_.publish(cmd_vel_msg)
 
